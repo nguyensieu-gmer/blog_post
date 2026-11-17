@@ -163,6 +163,29 @@ const postPublicPost = [
   },
 ];
 
+const postUnpublicPost = [
+  isAuth,
+  verifyPost,
+  async (req, res) => {
+    const postId = req.params.postId;
+    if (!postId) {
+      console.error("postId is not identify");
+      res.status(400).json({ message: "post id is not identify" });
+    }
+    const post = await prisma.post.update({
+      where: {
+        id: Number(postId),
+      },
+      data: {
+        published: false,
+      },
+    });
+    res.status(200).json({
+      message: "Unpublic post successful",
+    });
+  },
+];
+
 module.exports = {
   getPostAndComments,
   postCreatePost,
@@ -170,4 +193,5 @@ module.exports = {
   postUpdatePost,
   postCreateComment,
   postPublicPost,
+  postUnpublicPost,
 };

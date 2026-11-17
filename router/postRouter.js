@@ -17,7 +17,10 @@ postRouter.put("/:postId", postController.postUpdatePost);
 // create a new comment
 postRouter.post("/:postId/comment", postController.postCreateComment);
 
-// publish a post
-postRouter.post("/:postId/public", postController.postPublicPost);
+// public a post
+postRouter.post("/:postId/publish", postController.postPublicPost);
+
+// unpublic a post
+postRouter.post("/:postId/unpublish", postController.postUnpublicPost);
 
 module.exports = postRouter;
