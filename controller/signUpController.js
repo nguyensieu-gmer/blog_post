@@ -1,6 +1,7 @@
 const { prisma } = require("../lib/prisma");
 const { body, matchedData, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const maxLengthOfPassword = 6;
 
@@ -67,7 +68,7 @@ const checkNameAndEmail = async (req, res, next) => {
   next();
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   const { username, email, password } = req.customValidateData;
   let user;
   try {
@@ -80,12 +81,28 @@ const createUser = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json("Failed to register user.");
+    return res
+      .status(500)
+      .json({ message: "Failed to register user.", success: false });
   }
   req.logIn(user, (err) => {
     if (err) return next(err);
-
-    res.status(200).json({ message: "Sign in successful" });
+    jwt.sign(
+      { user: user.id },
+      process.env.JWT_SECRET,
+      { expiresIn: "30s" },
+      (err, token) => {
+        if (err) {
+          console.error("jwt error");
+          return next(err);
+        }
+        res.status(200).json({
+          success: true,
+          message: "Sign up sucessful",
+          token,
+        });
+      },
+    );
   });
 };
 

@@ -1,4 +1,5 @@
 const passport = require("../lib/passport");
+const jwt = require("jsonwebtoken");
 
 const postLogIn = (req, res, next) => {
   passport.authenticate("local", function (err, user, info) {
@@ -15,10 +16,22 @@ const postLogIn = (req, res, next) => {
       if (err) {
         return next(err);
       }
-      return res.status(200).json({
-        success: true,
-        message: "Login successful",
-      });
+      jwt.sign(
+        { user: user.id },
+        process.env.JWT_SECRET,
+        { expiresIn: "30s" },
+        (err, token) => {
+          if (err) {
+            console.error("jwt error");
+            return next(err);
+          }
+          res.status(200).json({
+            success: true,
+            message: "Login successful",
+            token,
+          });
+        },
+      );
     });
   })(req, res, next);
 };
