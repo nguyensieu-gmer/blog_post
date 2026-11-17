@@ -69,9 +69,10 @@ const checkNameAndEmail = async (req, res, next) => {
 
 const createUser = async (req, res) => {
   const { username, email, password } = req.customValidateData;
+  let user;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
+    user = await prisma.user.create({
       data: {
         name: username,
         email: email,
@@ -81,7 +82,11 @@ const createUser = async (req, res) => {
   } catch (error) {
     return res.status(500).json("Failed to register user.");
   }
-  res.json({ message: "User registed successful." });
+  req.logIn(user, (err) => {
+    if (err) return next(err);
+
+    res.status(200).json({ message: "Sign in successful" });
+  });
 };
 
 const postSignUpUser = [validate, checkNameAndEmail, createUser];
