@@ -1,7 +1,5 @@
 const { Router } = require("express");
-const { prisma } = require("../lib/prisma");
 const postRouter = Router();
-const isAuth = require("../lib/isAuth");
 const postController = require("../controller/postController");
 
 // get posts and comments
@@ -18,5 +16,8 @@ postRouter.put("/:postId", postController.postUpdatePost);
 
 // create a new comment
 postRouter.post("/:postId/comment", postController.postCreateComment);
+
+// publish a post
+postRouter.post("/:postId/public", postController.postPublicPost);
 
 module.exports = postRouter;
