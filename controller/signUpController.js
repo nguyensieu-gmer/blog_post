@@ -2,6 +2,7 @@ const { prisma } = require("../lib/prisma");
 const { body, matchedData, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { jwtExpire } = require("../variables");
 
 const maxLengthOfPassword = 6;
 
@@ -88,9 +89,9 @@ const createUser = async (req, res, next) => {
   req.logIn(user, (err) => {
     if (err) return next(err);
     jwt.sign(
-      { user: user.id },
+      user,
       process.env.JWT_SECRET,
-      { expiresIn: "30s" },
+      { expiresIn: jwtExpire },
       (err, token) => {
         if (err) {
           console.error("jwt error");
