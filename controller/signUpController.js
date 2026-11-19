@@ -80,6 +80,10 @@ const createUser = async (req, res, next) => {
         email: email,
         password: hashedPassword,
       },
+      select: {
+        id: true,
+        name: true,
+      },
     });
   } catch (error) {
     return res
@@ -101,6 +105,7 @@ const createUser = async (req, res, next) => {
           success: true,
           message: "Sign up sucessful",
           token,
+          user,
         });
       },
     );
