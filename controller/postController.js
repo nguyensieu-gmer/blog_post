@@ -1,6 +1,6 @@
 const { prisma } = require("../lib/prisma");
 const isAuth = require("../lib/isAuth");
-const verityToken = require("../lib/verifyToken");
+const verifyToken = require("../lib/verifyToken");
 
 async function verifyPost(req, res, next) {
   const postId = req.params.postId;
@@ -37,7 +37,7 @@ const getPostAndComments = async (req, res) => {
 // create new post
 const postCreatePost = [
   isAuth,
-  verityToken,
+  verifyToken,
   async (req, res) => {
     const defaultUserId = req.user.id;
     const { title, content } = req.body;
@@ -64,7 +64,7 @@ const postCreatePost = [
 // delete a post
 const postDeletePost = [
   isAuth,
-  verityToken,
+  verifyToken,
   verifyPost,
   async (req, res) => {
     const postId = Number(req.params.postId);
@@ -89,7 +89,7 @@ const postDeletePost = [
 // update a post
 const postUpdatePost = [
   isAuth,
-  verityToken,
+  verifyToken,
   verifyPost,
   async (req, res) => {
     const postId = Number(req.params.postId);
@@ -119,7 +119,7 @@ const postUpdatePost = [
 // create a new comment
 const postCreateComment = [
   isAuth,
-  verityToken,
+  verifyToken,
   async (req, res) => {
     const postId = Number(req.params.postId);
     const defaultAuthor = req.user.id;
@@ -146,7 +146,7 @@ const postCreateComment = [
 
 const postPublicPost = [
   isAuth,
-  verityToken,
+  verifyToken,
   verifyPost,
   async (req, res) => {
     const postId = req.params.postId;
@@ -170,7 +170,7 @@ const postPublicPost = [
 
 const postUnpublicPost = [
   isAuth,
-  verityToken,
+  verifyToken,
   verifyPost,
   async (req, res) => {
     const postId = req.params.postId;
