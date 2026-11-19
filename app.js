@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const userRouter = require("./router/userRouter");
 const postRouter = require("./router/postRouter");
 const commentRouter = require("./router/commentRouter");
@@ -8,6 +9,13 @@ const { prisma } = require("./lib/prisma");
 const session = require("express-session");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const passport = require("passport");
+
+// except localhost:5173
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  }),
+);
 
 // turn off strict mode
 app.set("strict routing", false);
