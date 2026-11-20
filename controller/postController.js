@@ -28,6 +28,7 @@ const getPostAndComments = async (req, res) => {
       published: true,
     },
     include: { comments: true },
+    include: { author: { select: { id: true, name: true } } },
   });
   res.json({
     post,
