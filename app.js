@@ -14,6 +14,7 @@ const passport = require("passport");
 app.use(
   cors({
     origin: "http://localhost:5173",
+    credentials: true,
   }),
 );
 
@@ -35,6 +36,8 @@ app.use(
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
+      secure: false,
+      sameSite: "lax",
     },
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -65,6 +68,7 @@ app.use((err, req, res, next) => {
   if (err) {
     console.log("error from hanler");
     console.error(err);
+    res.status(err.status).json(err.message);
   }
 });
 
