@@ -23,7 +23,6 @@ const postLogIn = (req, res, next) => {
         { expiresIn: jwtExpire },
         (err, token) => {
           if (err) {
-            console.error("jwt error");
             return next(err);
           }
           res.status(200).json({

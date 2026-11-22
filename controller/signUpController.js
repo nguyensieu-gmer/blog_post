@@ -91,14 +91,15 @@ const createUser = async (req, res, next) => {
       .json({ message: "Failed to register user.", success: false });
   }
   req.logIn(user, (err) => {
-    if (err) return next(err);
+    if (err) {
+      return next(err);
+    }
     jwt.sign(
       user,
       process.env.JWT_SECRET,
       { expiresIn: jwtExpire },
       (err, token) => {
         if (err) {
-          console.error("jwt error");
           return next(err);
         }
         res.status(200).json({
