@@ -56,20 +56,13 @@ app.use("/api/comments", commentRouter);
 
 // error handler
 app.use((err, req, res, next) => {
-  if (err.custom) {
-    res.status(err.statusCode).json({
-      message: err.message,
-    });
-  } else {
-    return next();
-  }
-});
-app.use((err, req, res, next) => {
-  if (err) {
-    console.log("error from hanler");
-    console.error(err);
-    res.status(err.status).json(err.message);
-  }
+  console.error(err);
+
+  const statusCode = err.statusCode || err.status || 500;
+
+  return res.status(statusCode).json({
+    message: err.message || "Internal Server Error",
+  });
 });
 
 const PORT = process.env.PORT;
