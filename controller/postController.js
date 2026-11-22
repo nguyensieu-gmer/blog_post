@@ -34,6 +34,22 @@ const getPostAndComments = async (req, res) => {
   });
 };
 
+const getUserPost = [
+  isAuth,
+  async (req, res) => {
+    console.log(req.user);
+    const post = await prisma.post.findMany({
+      where: { authorId: Number(req.user.id) },
+      include: {
+        comments: true,
+      },
+    });
+    res.json({
+      post,
+    });
+  },
+];
+
 // create new post
 const postCreatePost = [
   isAuth,
@@ -200,4 +216,5 @@ module.exports = {
   postCreateComment,
   postPublicPost,
   postUnpublicPost,
+  getUserPost,
 };
