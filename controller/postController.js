@@ -34,13 +34,16 @@ const getPostAndComments = async (req, res) => {
   });
 };
 
+// get user authenticated post
 const getUserPost = [
   isAuth,
   async (req, res) => {
     const post = await prisma.post.findMany({
       where: { authorId: Number(req.user.id) },
       include: {
-        comments: true,
+        comments: {
+          include: { author: { select: { id: true, name: true } } },
+        },
       },
     });
     res.json({
