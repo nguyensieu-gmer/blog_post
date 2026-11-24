@@ -3,7 +3,23 @@ const isAuth = require("../lib/isAuth");
 const verifyToken = require("../lib/verifyToken");
 const { body, matchedData, validationResult } = require("express-validator");
 
-const validateComment = [body("comment").trim()];
+const validateComment = [
+  body("comment")
+    .trim()
+    .notEmpty()
+    .withMessage("Your comment have not been empty!"),
+];
+
+const validatePost = [
+  body("title")
+    .trim()
+    .notEmpty()
+    .withMessage("Your title have not been empty!"),
+  body("content")
+    .trim()
+    .notEmpty()
+    .withMessage("Your content have not been empty!"),
+];
 
 async function verifyPost(req, res, next) {
   const postId = req.params.postId;
@@ -59,9 +75,18 @@ const getUserPost = [
 const postCreatePost = [
   isAuth,
   verifyToken,
+  validatePost,
   async (req, res) => {
     const defaultUserId = req.user.id;
-    const { title, content } = req.body;
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).json({
+        message: "Your title or content can be wrong!",
+        error: result.array(),
+      });
+    }
+    const { title, content } = matchedData(req);
+    console.log(title, content);
     try {
       const post = await prisma.post.create({
         data: {
@@ -112,9 +137,17 @@ const postUpdatePost = [
   isAuth,
   verifyToken,
   verifyPost,
+  validatePost,
   async (req, res) => {
     const postId = Number(req.params.postId);
-    const { title, content } = req.body;
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).json({
+        message: "Your title or content can be wrong",
+        error: result.array(),
+      });
+    }
+    const { title, content } = matchedData(req);
     try {
       const post = await prisma.post.update({
         where: {
@@ -147,7 +180,9 @@ const postCreateComment = [
     const defaultAuthor = req.user.id;
     const result = validationResult(req);
     if (!result.isEmpty()) {
-      return res.json(400).json({ message: "Something wrong here" });
+      return res
+        .json(400)
+        .json({ message: "Something wrong here", error: result.array() });
     }
     const { comment } = matchedData(req);
     try {
