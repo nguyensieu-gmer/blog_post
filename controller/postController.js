@@ -1,6 +1,9 @@
 const { prisma } = require("../lib/prisma");
 const isAuth = require("../lib/isAuth");
 const verifyToken = require("../lib/verifyToken");
+const { body, matchedData, validationResult } = require("express-validator");
+
+const validateComment = [body("comment").trim()];
 
 async function verifyPost(req, res, next) {
   const postId = req.params.postId;
@@ -138,10 +141,15 @@ const postUpdatePost = [
 const postCreateComment = [
   isAuth,
   verifyToken,
+  validateComment,
   async (req, res) => {
     const postId = Number(req.params.postId);
     const defaultAuthor = req.user.id;
-    const { comment } = req.body;
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.json(400).json({ message: "Something wrong here" });
+    }
+    const { comment } = matchedData(req);
     try {
       const userComment = await prisma.comment.create({
         data: {
