@@ -1,15 +1,12 @@
 # blog_post
 
-continue at sign up user
+a simply website for posts
+we are using PERN stack
+For authentication: we use session, jwt
 
-# login:
+# Environment variable use for project
 
-email
-password
-
-# signup:
-
-username
-email
-password
-confirmpassword
+DATABASE_URL
+PORT
+SESSION_SECRET
+JWT_SECRET
