@@ -18,6 +18,9 @@ app.use(
   }),
 );
 
+// trust proxy
+app.set("trust proxy", 1);
+
 // turn off strict mode
 app.set("strict routing", false);
 
